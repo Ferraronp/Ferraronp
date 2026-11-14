@@ -1,72 +1,57 @@
-# Артур
+# Привет, я Артур 👋
 
-*LLM-инженерия: обучение моделей, RAG, агенты, инференс и пайплайны.*
-*~10 лет в программировании. Большинство вещей предпочитаю строить с нуля — иначе непонятно, как оно работает.*
+**ML / LLM Engineer** · Python · PyTorch · NLP · RAG · Model Inference
 
----
+Разрабатываю и исследую AI-системы: обучаю и адаптирую языковые модели, строю RAG-пайплайны, оцениваю их качество и оптимизирую инференс. Мне интересны не только работающие демо, но и **почему решение работает, сколько ресурсов потребляет и как его улучшить**.
 
-## Проекты
+Учусь на 4-м курсе МТУСИ («Программная инженерия», выпуск — 2027). Интересны инженерные задачи в команде: **LLM/NLP, fine-tuning, inference, RAG и AI-агенты**.
 
-### 🧠 [GPT Pretraining from Scratch](https://github.com/Ferraronp/gpt-pretrain)
+## Избранные проекты
 
-Серия русскоязычных языковых моделей, обученных с нуля на собственном корпусе (~12B токенов).
+### ⚡ [CosyVoice3 — GGUF и ускорение инференса](https://github.com/Ferraronp/CosyVoice-gguf-converter)
 
-Архитектура эволюционировала от GPT-2 Small до кастомной реализации с **RoPE, RMSNorm, SwiGLU, GQA, Flash Attention** (~700M параметров).
-Распределённое обучение реализовано через несколько Colab-воркеров с ручной синхронизацией градиентов.
+Реализовал альтернативный backend на **llama-cpp-python** для языковой части CosyVoice3, генерирующей речевые токены, и конвертер весов в **GGUF**. Опубликовал квантизованные варианты модели и подготовил [upstream PR в CosyVoice](https://github.com/FunAudioLLM/CosyVoice/pull/1872).
 
-### 📚 [Military Charters RAG](https://github.com/Ferraronp/military-charters-rag)
+**Результат:** в сравнительном тесте на NVIDIA T4 получил примерно **2,6× снижение RTF** относительно PyTorch FP16 для соответствующего inference-пайплайна.
 
-RAG-система по пяти воинским уставам ВС РФ: парсинг нормативных документов, dense retrieval через **Qdrant**, reranking и генерация ответа с цитированием источников.
+[Код и конвертер](https://github.com/Ferraronp/CosyVoice-gguf-converter) · [Модели на Hugging Face](https://huggingface.co/Ferraronp/CosyVoice3-qwen2.5-0.5b-speech-gguf) · [Техническая статья](https://habr.com/ru/articles/1027934/)
 
-Проведён собственный evaluation на 30 вопросах с direct, paraphrased, multi-article, scenario и unanswerable кейсами. Сравнены **Qwen3-Embedding-0.6B, USER-bge-m3 и BGE-M3**.
+### 🔎 [Military Charters RAG — поиск, reranking и evaluation](https://github.com/Ferraronp/military-charters-rag)
 
-Лучший двухэтапный пайплайн — **Qwen3-Embedding-0.6B + Qwen3-Reranker-0.6B**:
+Разработал RAG-систему по пяти нормативным документам: подготовил корпус из ~1 500 фрагментов, построил **dense retrieval в Qdrant**, добавил **Qwen3-Reranker**, генерацию ответов со ссылками на источники и отдельную оценку качества.
 
-* **MRR:** 0.902
-* **Hit@1:** 0.88
-* **Recall@5:** 0.87
-* **nDCG@5:** 0.85
-* **Recall@20:** 0.93
+**Результат на собственном тестовом наборе из 30 вопросов:** **MRR 0.902 · Hit@1 0.88 · Recall@5 0.87** для лучшего двухэтапного поискового пайплайна. Сравнил три embedding-модели и влияние reranking.
 
-### 🍽️ [VLM Nutrition Analyzer](https://github.com/Ferraronp/vlm-nutrition-analyzer)
+**Технологии:** Python, Qdrant, Qwen3-Embedding, Qwen3-Reranker, RAG, retrieval evaluation.
 
-API-сервис для анализа КБЖУ по фотографии блюда.
+### 🧠 [LLM Pretraining from Scratch — модели до ~700M](https://github.com/Ferraronp/gpt-pretrain)
 
-Трёхэтапный пайплайн: **Qwen2.5-VL-7B** описывает состав → LLM извлекает ингредиенты и ищет их в Open Food Facts → финальная сборка структурированного JSON.
+С нуля реализовывал и обучал русскоязычные decoder-only Transformer-модели. Одна из конфигураций (~700M параметров) прошла обучение на **15 млрд токенов** и достигла **validation loss 3.04**.
 
-Реализованы батч-менеджер, load balancer для нескольких Colab-инстансов и мониторинг GPU-памяти.
+Экспериментировал с **RoPE, RMSNorm, SwiGLU, GQA, FlashAttention** и собственным **Data Parallel** между независимыми GPU-воркерами; в одном из тестов получил около **2× ускорения на пяти воркерах**.
 
-### 📊 [llm.c TensorBoard Logger](https://github.com/Ferraronp/llm.c_tensorboard)
+[Исходный код](https://github.com/Ferraronp/gpt-pretrain) · [Разбор разработки](https://habr.com/ru/articles/1037532/)
 
-Утилита для визуализации метрик обучения `llm.c` в TensorBoard.
-Поддерживает live-мониторинг обучения и разовый импорт готовых логов.
+### 🍽️ [VLM Nutrition Analyzer — мультимодальный API](https://github.com/Ferraronp/vlm-nutrition-analyzer)
 
----
+Собрал сервис анализа состава блюд по фотографии: **Qwen2.5-VL**, LLM и Open Food Facts формируют структурированный ответ. Реализовал FastAPI, батчинг запросов, балансировку между несколькими GPU-инстансами и мониторинг ресурсов.
 
-## Open Source
+## Сейчас в разработке
 
-**[FunAudioLLM/CosyVoice #1872](https://github.com/FunAudioLLM/CosyVoice/pull/1872)** — `llama-cpp-python` backend для CosyVoice3.
-Интеграция GGUF-инференса через llama.cpp: ~2.6× ускорение RTF на T4 по сравнению с PyTorch fp16.
-Конвертер и квантизованные модели: [HuggingFace](https://huggingface.co/Ferraronp/CosyVoice3-qwen2.5-0.5b-speech-gguf).
+**[github2CV_ML](https://github.com/Ferraronp/github2CV_ML)** — исследую извлечение технических фактов из GitHub-репозиториев с привязкой к исходным файлам и построение профиля навыков на основе проверяемых свидетельств. Уже есть сборщик репозиториев, типизированные контракты, компоненты LLM-анализа и эксперименты по оценке качества. **Полный end-to-end продукт ещё в работе.**
 
-**[karpathy/llm.c #828](https://github.com/karpathy/llm.c/pull/828)** — исправление переполнения в C-даталоадере.
-Python-часть поддерживала датасеты до 4 GB, тогда как C-реализация тихо переполнялась на файлах >2 GB из-за каста `(int)` перед `fseek`. Убран downcast.
+## Open Source и небольшие инструменты
 
----
+- **[karpathy/llm.c #828](https://github.com/karpathy/llm.c/pull/828)** — предложил исправление переполнения 32-битного смещения в C-даталоадере при чтении датасетов объёмом более 2 ГБ (PR).
+- **[llm.c TensorBoard Logger](https://github.com/Ferraronp/llm.c_tensorboard)** — мониторинг метрик обучения в TensorBoard, включая live-режим и импорт логов.
 
-## Стек
+## Основной стек
 
-| Область         | Инструменты                                             |
-| --------------- | ------------------------------------------------------- |
-| LLM             | PyTorch · Transformers · PEFT / LoRA · bitsandbytes     |
-| RAG / Retrieval | Qdrant · Sentence Transformers · rerankers              |
-| Инференс        | vLLM · GGUF · llama.cpp                                 |
-| Данные          | Hugging Face Datasets · tiktoken · SimHash · Playwright |
-| Бэкенд          | FastAPI · Docker · PostgreSQL                           |
+**ML / LLM:** Python, PyTorch, Hugging Face Transformers, PEFT / LoRA, QLoRA, NLP  
+**Retrieval / Evaluation:** RAG, Qdrant, embeddings, reranking, retrieval metrics  
+**Inference:** llama.cpp, llama-cpp-python, GGUF, quantization  
+**Backend / Tools:** FastAPI, REST API, Docker, Git, GitHub Actions, Linux
 
----
+## Связаться
 
-## Контакты
-
-* GitHub: [Ferraronp](https://github.com/Ferraronp)
-* Telegram: @Ferraronp
+[Telegram](https://t.me/Ferraronp) · [Habr](https://habr.com/ru/users/Ferraronp/) · [GitHub](https://github.com/Ferraronp)
